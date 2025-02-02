@@ -2,6 +2,28 @@ local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 vim.opt.rtp:prepend(lazypath)
 
 require "lazy".setup {
+    -- norsu
+    {
+        "hiimsergey/norsu",
+        dependencies = { "nvim-telescope/telescope.nvim" },
+        config = function()
+            local list_wikis = require "norsu.list_wikis"
+            require "norsu".setup {
+                list_wikis_func = list_wikis.telescope,
+                wikis = {
+                    {
+                        name = "basic",
+                        path = vim.fn.expand("~") .. "/stuff/norsu"
+                    },
+                    {
+                        name = "writing",
+                        path = vim.fn.expand("~") .. "/stuff/writing"
+                    }
+                }
+            }
+        end
+    },
+
     -- colorscheme
     {
         "catppuccin/nvim",
@@ -93,7 +115,7 @@ require "lazy".setup {
 
             require "mason".setup()
             require "mason-lspconfig".setup {
-                ensure_installed = { "clangd", "lua_ls", "rust_analyzer" },
+                ensure_installed = { "clangd" },
                 handlers = {
                     function(server) require "lspconfig"[server].setup {} end
                 }

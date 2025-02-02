@@ -8,7 +8,7 @@ vim.keymap.set("n", "<leader>bl", function()
         "--branch=stable",
         vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
     }
-    print "Installed lazy.nvim"
+    print "Installed lazy.nvim successfully! Relaunch nvim."
 end)
 
 require "hiimsergey.lazy"
