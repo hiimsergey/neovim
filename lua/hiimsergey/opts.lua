@@ -36,5 +36,6 @@ o.colorcolumn = { 80, 90 }
 -- this line disables it.
 vim.g.zig_fmt_autosave = 0
 
--- this is a custom variable i introduce to track whether nvim-colorizer is on.
-vim.g.colorizer = false
+-- custom variables for lualine modules
+vim.g.colorizer_on = false
+vim.g.goyo_on = false

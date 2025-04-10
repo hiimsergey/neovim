@@ -179,9 +179,14 @@ require "lazy".setup {
                             color = "@comment.todo"
                         },
                         {
-                            function() return vim.g.colorizer and "colorizer" or "" end,
+                            function() return vim.g.colorizer_on and "colorizer" or "" end,
                             icon = "",
                             color = "@comment.warning"
+                        },
+                        {
+                            function() return vim.g.goyo_on and "zen" or "" end,
+                            icon = "󱅻",
+                            color = "@comment.error"
                         },
                     }
                 }

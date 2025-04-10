@@ -1,79 +1,87 @@
 local vim = vim
-local ks = vim.keymap.set
+local telescope = require "telescope"
+local builtin = require "telescope.builtin"
 
 vim.g.mapleader = " "
 
--- files
-ks("n", "<leader>nk", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/keys.lua" end, { desc = "Open nvim's key config" })
-ks("n", "<leader>nl", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/lazy.lua" end, { desc = "Open nvim's plugin config" })
-ks("n", "<leader>no", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/opt.lua" end, { desc = "Open nvim's basic options" })
-ks("n", "<leader>cf", function() vim.cmd.edit "~/.config/fish/config.fish" end, { desc = "Open shell config" })
-ks("n", "<leader>cs", function() vim.cmd.edit "~/.config/sway/config" end, { desc = "Open window manager config" })
+require "which-key".add {
+    -- neovim config
+    { "<leader>n", group = "neovim" },
+    { "<leader>nk", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/keys.lua" end, desc = "Open nvim's key config" },
+    { "<leader>nl", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/lazy.lua" end, desc = "Open nvim's plugin config" },
+    { "<leader>no", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/opts.lua" end, desc = "Open nvim's core config" },
 
--- writing
-ks("i", "<m-backspace>", "<c-w>", { desc = "Delete last word" })
-ks("n", "<leader><leader>", vim.cmd.write, { desc = "Save file" })
-ks("n", "<leader>z", vim.cmd.wq, { desc = "Save and quit" })
-ks("n", "<leader>q", ":q!<cr>", { desc = "Quit without saving" })
-ks("n", "<leader>k", function() vim.wo.wrap = not vim.wo.wrap end, { desc = "Toggle wrap" })
+    -- other configs
+    { "<leader>c", group = "config" },
+    { "<leader>cf", function() vim.cmd.edit "~/.config/fish/config.fish" end, desc = "Open shell config" },
+    { "<leader>cs", function() vim.cmd.edit "~/.config/sway/config" end, desc = "Open window manager config" },
 
--- buffers
-ks("n", "<leader>x", vim.cmd.bdelete, { desc = "Close buffer" })
-ks("n", "<leader><tab>", vim.cmd.bnext, { desc = "Go to next buffer" })
-ks("n", "<leader><s-tab>", vim.cmd.bprev, { desc = "Go to previous buffer" })
+    -- editing
+    { "<leader><leader>", vim.cmd.write, desc = "Save file" },
+    { "<leader>z", vim.cmd.wq, desc = "Save and quit" },
+    { "<leader>q", ":q!<cr>", desc = "Quit without saving" },
+    { "<leader>k", function() vim.wo.wrap = not vim.wo.wrap end, desc = "Toggle wrap" },
 
--- lsp
-ks({ "n", "i" }, "<f2>", vim.lsp.buf.rename, { desc = "Rename symbol under cursor" })
+    -- buffers
+    { "<leader>x", vim.cmd.bdelete, desc = "Close buffer" },
+    { "<leader><tab>", vim.cmd.bnext, desc = "Go to next buffer" },
+    { "<leader><s-tab>", vim.cmd.bprev, desc = "Go to previous buffer" },
 
--- panes
-ks({ "n", "i" }, "<m-h>", function() vim.cmd.wincmd("h") end, { desc = "Go to pane to the left" })
-ks({ "n", "i" }, "<m-j>", function() vim.cmd.wincmd("j") end, { desc = "Go to pane below" })
-ks({ "n", "i" }, "<m-k>", function() vim.cmd.wincmd("k") end, { desc = "Go to pane above" })
-ks({ "n", "i" }, "<m-l>", function() vim.cmd.wincmd("l") end, { desc = "Go to pane to the right" })
+    -- split panes
+    { "<leader>j", function() vim.cmd.split() vim.cmd.wincmd "j" end, desc = "Split pane down" },
+    { "<leader>l", function() vim.cmd.vsplit() vim.cmd.wincmd "l" end, desc = "Split pane to the right" },
 
-ks("n", "<leader>j", function()
-    vim.cmd.split()
-    vim.cmd.wincmd "j"
-end, { desc = "Split pane down" })
+    -- resize panes
+    { "<m-<>", function() vim.cmd "vertical resize -8" end, desc = "Shrink pane vertically" },
+    { "<m-s-<>", function() vim.cmd "vertical resize +8" end, desc = "Grow pane vertically" },
+    { "<m-->", function() vim.cmd "horizontal resize -4" end, desc = "Shrink pane horizontally" },
+    { "<m-+>", function() vim.cmd "horizontal resize +4" end, desc = "Grow pane horizontally" },
 
-ks("n", "<leader>l", function()
-    vim.cmd.vsplit()
-    vim.cmd.wincmd "l"
-end, { desc = "Split pane to the right" })
+    -- telescope
+    { "<leader>.", builtin.oldfiles, desc = "View recent files" },
+    { "<leader>b", builtin.buffers, desc = "View open buffers" },
+    { "<leader>e", telescope.extensions.file_browser.file_browser, desc = "Browse files" },
+    { "<leader>f", builtin.find_files, desc = "Find files in this directory" },
+    { "<leader>t", builtin.colorscheme, desc = "Change colorscheme" },
 
--- resizing panes
-ks("n", "<m-<>", function() vim.cmd "vertical resize -8" end, { desc = "Shrink pane vertically" })
-ks("n", "<m-s-<>", function() vim.cmd "vertical resize +8" end, { desc = "Grow pane vertically" })
-ks("n", "<m-->", function() vim.cmd "horizontal resize -4" end, { desc = "Shrink pane horizontally" })
-ks("n", "<m-+>", function() vim.cmd "horizontal resize +4" end, { desc = "Grow pane horizontally" })
+    -- vimwiki
+    { "<leader>a", function() vim.cmd.edit "~/stuff/vimwiki/Aufgaben.wiki" end, desc = "Open tasks wiki page" },
+    { "<leader>d", builtin.diagnostics, desc = "View LSP diagnostics" },
+    { "<leader>m", function() vim.cmd.edit "~/stuff/vimwiki/main.wiki" end, desc = "Open main wiki page" },
+    { "<leader>o", function() vim.cmd.Telescope("find_files", "cwd=~/stuff/vimwiki") end, desc = "Find wiki pages" },
+    { "<leader>p", function() vim.cmd.edit "~/stuff/vimwiki/Programmieren.wiki" end, desc = "Open programming wiki page" },
+    { "<leader>u", function() vim.cmd.edit "~/stuff/vimwiki/Uni.wiki" end, desc = "Open uni wiki page" },
+    { "<leader>w", function() vim.cmd.Telescope("find_files", "cwd=~/stuff/writing") end, desc = "Find writing wiki pages" },
+    { "<leader>v", group = "vimwiki" },
+    { "<leader>vb", vim.cmd.VimwikiBacklinks, desc = "Show this wiki page's backlinks" },
+    { "<leader>vd", vim.cmd.VimwikiDeleteFile, desc = "Delete this wiki page" },
+    { "<leader>vr", vim.cmd.VimwikiRenameFile, desc = "Rename this wiki page" },
 
--- telescope
-local telescope = require "telescope"
-local builtin = require "telescope.builtin"
-ks("n", "<leader>.", builtin.oldfiles, { desc = "View recent files" })
-ks("n", "<leader>b", builtin.buffers, { desc = "View open buffers" })
-ks("n", "<leader>e", telescope.extensions.file_browser.file_browser, { desc = "Browse files" })
-ks("n", "<leader>f", builtin.find_files, { desc = "Find files in this directory" })
-ks("n", "<leader>t", builtin.colorscheme, { desc = "Change colorscheme" })
+    -- etc
+    { "<esc>", vim.cmd.nohlsearch, desc = "Remove search highlights" },
+    { "<leader>r", function() vim.cmd.Goyo() vim.g.goyo_on = not vim.g.goyo_on end, desc = "Toggle zen mode" },
+    { "<leader>h", function() vim.cmd.ColorizerToggle() vim.g.colorizer_on = not vim.g.colorizer_on end, desc = "Toggle hex colorizer" },
 
--- vimwiki
-ks("i", "<c-8>", "[[]]<left><left>", { desc = "Insert vimwiki link" })
-ks("i", "<m-0>", "==<left>", { desc = "Insert vimwiki heading" })
-ks("n", "<leader>a", function() vim.cmd.edit "~/stuff/vimwiki/Aufgaben.wiki" end, { desc = "Open tasks wiki page" })
-ks("n", "<leader>d", builtin.diagnostics, { desc = "View LSP diagnostics" })
-ks("n", "<leader>m", function() vim.cmd.edit "~/stuff/vimwiki/main.wiki" end, { desc = "Open main wiki page" })
-ks("n", "<leader>o", function() vim.cmd.Telescope("find_files", "cwd=~/stuff/vimwiki") end, { desc = "Find wiki pages" })
-ks("n", "<leader>p", function() vim.cmd.edit "~/stuff/vimwiki/Programmieren.wiki" end, { desc = "Open programming wiki page" })
-ks("n", "<leader>u", function() vim.cmd.edit "~/stuff/vimwiki/Uni.wiki" end, { desc = "Open uni wiki page" })
-ks("n", "<leader>w", function() vim.cmd.Telescope("find_files", "cwd=~/stuff/writing") end, { desc = "Find writing wiki pages" })
-ks("n", "<leader>vb", vim.cmd.VimwikiBacklinks, { desc = "Show this wiki page's backlinks" })
-ks("n", "<leader>vd", vim.cmd.VimwikiDeleteFile, { desc = "Delete this wiki page" })
-ks("n", "<leader>vr", vim.cmd.VimwikiRenameFile, { desc = "Rename this wiki page" })
+    {
+        mode = "i",
 
--- etc
-ks("n", "<esc>", vim.cmd.nohlsearch, { desc = "Remove search highlights" })
-ks("n", "<leader>g", vim.cmd.Goyo, { desc = "Toggle zen mode" })
-ks("n", "<leader>h", function()
-    vim.cmd.ColorizerToggle()
-    vim.g.colorizer = not vim.g.colorizer
-end, { desc = "Toggle hex colorizer" })
+        { "<m-backspace>", "<c-w>", desc = "Delete last word" },
+
+        -- vimwiki
+        { "<c-8>", "[[]]<left><left>", desc = "Insert vimwiki link" },
+        { "<m-0>", "==<left>", desc = "Insert vimwiki heading" },
+    },
+
+    {
+        mode = { "n", "i" },
+
+        -- focus panes
+        { "<m-h>", function() vim.cmd.wincmd("h") end, desc = "Focus pane to the left" },
+        { "<m-j>", function() vim.cmd.wincmd("j") end, desc = "Focus pane below" },
+        { "<m-k>", function() vim.cmd.wincmd("k") end, desc = "Focus pane above" },
+        { "<m-l>", function() vim.cmd.wincmd("l") end, desc = "Focus pane to the right" },
+
+        -- lsp
+        { "<f2>", vim.lsp.buf.rename, desc = "Rename symbol under cursor" }
+    }
+}

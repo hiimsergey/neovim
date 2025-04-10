@@ -1,3 +1,3 @@
 require "hiimsergey.lazy"
-require "hiimsergey.opt"
+require "hiimsergey.opts"
 require "hiimsergey.keys"
