@@ -54,7 +54,7 @@ ks("n", "<leader>.", builtin.oldfiles, { desc = "View recent files" })
 ks("n", "<leader>b", builtin.buffers, { desc = "View open buffers" })
 ks("n", "<leader>e", telescope.extensions.file_browser.file_browser, { desc = "Browse files" })
 ks("n", "<leader>f", builtin.find_files, { desc = "Find files in this directory" })
-ks("n", "<leader>t", builtin.colorscheme, { desc = "Change colorscheme" })
+ks("n", "<leader>c", builtin.colorscheme, { desc = "Change colorscheme" })
 
 -- vimwiki
 ks("i", "<c-8>", "[[]]<left><left>", { desc = "Insert vimwiki link" })
