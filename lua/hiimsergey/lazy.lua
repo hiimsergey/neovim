@@ -35,7 +35,10 @@ end, { desc = "Bootstrap lazy.nvim" })
 vim.opt.rtp:prepend(lazypath)
 
 require "lazy".setup {
+    "folke/tokyonight.nvim",
+    "loctvl842/monokai-pro.nvim",
     "marko-cerovac/material.nvim",
+    "mofiqul/vscode.nvim",
     "olimorris/onedarkpro.nvim",
     "projekt0n/github-nvim-theme",
     "sainnhe/gruvbox-material",
