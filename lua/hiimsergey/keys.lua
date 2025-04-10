@@ -1,85 +1,79 @@
-local c = vim.cmd
-local function n(keys, cmd) vim.keymap.set("n", keys, cmd) end
-local function i(keys, cmd) vim.keymap.set("i", keys, cmd) end
+local vim = vim
+local ks = vim.keymap.set
 
 vim.g.mapleader = " "
 
--- editing
-i("<m-bs>", "<c-w>") -- delete words with alt-backspace
-i("<c-z>", c.undo)
-i("<c-y>", c.redo)
-i("<m-i>", "<esc>")
-n("<esc>", c.nohlsearch)
-i("<m-s-d>", function()
-    local date = os.date("%Y-%m-%d")
-    vim.api.nvim_put({date}, "c", true, true)
-end)
+-- files
+ks("n", "<leader>nk", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/keys.lua" end, { desc = "Open nvim's key config" })
+ks("n", "<leader>nl", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/lazy.lua" end, { desc = "Open nvim's plugin config" })
+ks("n", "<leader>no", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/opt.lua" end, { desc = "Open nvim's basic options" })
+ks("n", "<leader>cf", function() vim.cmd.edit "~/.config/fish/config.fish" end, { desc = "Open shell config" })
+ks("n", "<leader>cs", function() vim.cmd.edit "~/.config/sway/config" end, { desc = "Open window manager config" })
 
--- saving
-n("<leader><leader>", c.write)
-n("<leader>z", c.wq)
-n("<leader>q", ":q!<cr>")
-
--- commands
-n("!", ":!")
+-- writing
+ks("i", "<m-backspace>", "<c-w>", { desc = "Delete last word" })
+ks("n", "<leader><leader>", vim.cmd.write, { desc = "Save file" })
+ks("n", "<leader>z", vim.cmd.wq, { desc = "Save and quit" })
+ks("n", "<leader>q", ":q!<cr>", { desc = "Quit without saving" })
+ks("n", "<leader>k", function() vim.wo.wrap = not vim.wo.wrap end, { desc = "Toggle wrap" })
 
 -- buffers
-n("<leader>x", c.bdelete)
-n("<tab>", c.bnext)
-n("<s-tab>", c.bprev)
+ks("n", "<leader>x", vim.cmd.bdelete, { desc = "Close buffer" })
+ks("n", "<leader><tab>", vim.cmd.bnext, { desc = "Go to next buffer" })
+ks("n", "<leader><s-tab>", vim.cmd.bprev, { desc = "Go to previous buffer" })
+
+-- lsp
+ks({ "n", "i" }, "<f2>", vim.lsp.buf.rename, { desc = "Rename symbol under cursor" })
 
 -- panes
-for _, d in ipairs { "h", "j", "k", "l" } do
-    vim.keymap.set({ "n", "i" }, "<m-" .. d .. ">", function()
-        c.wincmd(d)
-    end)
-end
+ks({ "n", "i" }, "<m-h>", function() vim.cmd.wincmd("h") end, { desc = "Go to pane to the left" })
+ks({ "n", "i" }, "<m-j>", function() vim.cmd.wincmd("j") end, { desc = "Go to pane below" })
+ks({ "n", "i" }, "<m-k>", function() vim.cmd.wincmd("k") end, { desc = "Go to pane above" })
+ks({ "n", "i" }, "<m-l>", function() vim.cmd.wincmd("l") end, { desc = "Go to pane to the right" })
 
-n("<leader>j", function()
-    c.split()
-    c.wincmd "j"
-end)
+ks("n", "<leader>j", function()
+    vim.cmd.split()
+    vim.cmd.wincmd "j"
+end, { desc = "Split pane down" })
 
-n("<leader>l", function()
-    c.vsplit()
-    c.wincmd "l"
-end)
+ks("n", "<leader>l", function()
+    vim.cmd.vsplit()
+    vim.cmd.wincmd "l"
+end, { desc = "Split pane to the right" })
 
-n("<m-<>", function() vim.cmd "vertical resize -8" end) -- resizing panes
-n("<m-s-<>", function() vim.cmd "vertical resize +8" end)
-n("<m-->", function() vim.cmd "resize -4" end)
-n("<m-+>", function() vim.cmd "resize +4" end)
-
--- files
-for _, file in ipairs { "basic", "keys", "lazy" } do
-    n("<leader>n" .. file:sub(1, 1), function()
-        c.edit("~/.config/nvim/lua/hiimsergey/" .. file .. ".lua")
-    end)
-end
-
-n("<leader>cf", function() c.edit "~/.config/fish/config.fish" end)
-n("<leader>cs", function() c.edit "~/.config/sway/config" end)
-
--- neotree
-n("<leader>e", function() c.Neotree "toggle" end)
+-- resizing panes
+ks("n", "<m-<>", function() vim.cmd "vertical resize -8" end, { desc = "Shrink pane vertically" })
+ks("n", "<m-s-<>", function() vim.cmd "vertical resize +8" end, { desc = "Grow pane vertically" })
+ks("n", "<m-->", function() vim.cmd "horizontal resize -4" end, { desc = "Shrink pane horizontally" })
+ks("n", "<m-+>", function() vim.cmd "horizontal resize +4" end, { desc = "Grow pane horizontally" })
 
 -- telescope
-n("<leader>f", function() c.Telescope("find_files", "hidden=true") end)
-n("<leader>g", function() c.Telescope "git_commits" end)
-n("<leader>b", function() c.Telescope "buffers" end)
+local telescope = require "telescope"
+local builtin = require "telescope.builtin"
+ks("n", "<leader>.", builtin.oldfiles, { desc = "View recent files" })
+ks("n", "<leader>b", builtin.buffers, { desc = "View open buffers" })
+ks("n", "<leader>e", telescope.extensions.file_browser.file_browser, { desc = "Browse files" })
+ks("n", "<leader>f", builtin.find_files, { desc = "Find files in this directory" })
+ks("n", "<leader>t", builtin.colorscheme, { desc = "Change colorscheme" })
 
 -- vimwiki
-i("<c-8>", "[[]]<left><left>") -- links
-i("<m-0>", "==<left>") -- headings
-n("<leader>a", function() c.edit "~/stuff/vimwiki/Aufgaben.wiki" end)
-n("<leader>d", function() c.edit "~/stuff/vimwiki/Pakete.wiki" end)
-n("<leader>m", function() c.edit "~/stuff/vimwiki/main.wiki" end)
-n("<leader>o", function() c.Telescope("find_files", "cwd=~/stuff/vimwiki") end)
-n("<leader>p", function() c.edit "~/stuff/vimwiki/Programmieren.wiki" end)
-n("<leader>u", function() c.edit "~/stuff/vimwiki/Uni.wiki" end)
-n("<leader>t", function() c.edit "~/stuff/vimwiki/Tag.wiki" end)
-n("<leader>w", function() c.Telescope("find_files", "cwd=~/stuff/writing") end)
-n("<leader>vb", c.VimwikiBacklinks)
-n("<leader>vd", c.VimwikiDeleteFile)
-n("<leader>vr", c.VimwikiRenameFile)
-vim.keymap.set({ "n", "i" }, "<c-m-->", c.VimwikiToggleListItem)
+ks("i", "<c-8>", "[[]]<left><left>", { desc = "Insert vimwiki link" })
+ks("i", "<m-0>", "==<left>", { desc = "Insert vimwiki heading" })
+ks("n", "<leader>a", function() vim.cmd.edit "~/stuff/vimwiki/Aufgaben.wiki" end, { desc = "Open tasks wiki page" })
+ks("n", "<leader>d", builtin.diagnostics, { desc = "View LSP diagnostics" })
+ks("n", "<leader>m", function() vim.cmd.edit "~/stuff/vimwiki/main.wiki" end, { desc = "Open main wiki page" })
+ks("n", "<leader>o", function() vim.cmd.Telescope("find_files", "cwd=~/stuff/vimwiki") end, { desc = "Find wiki pages" })
+ks("n", "<leader>p", function() vim.cmd.edit "~/stuff/vimwiki/Programmieren.wiki" end, { desc = "Open programming wiki page" })
+ks("n", "<leader>u", function() vim.cmd.edit "~/stuff/vimwiki/Uni.wiki" end, { desc = "Open uni wiki page" })
+ks("n", "<leader>w", function() vim.cmd.Telescope("find_files", "cwd=~/stuff/writing") end, { desc = "Find writing wiki pages" })
+ks("n", "<leader>vb", vim.cmd.VimwikiBacklinks, { desc = "Show this wiki page's backlinks" })
+ks("n", "<leader>vd", vim.cmd.VimwikiDeleteFile, { desc = "Delete this wiki page" })
+ks("n", "<leader>vr", vim.cmd.VimwikiRenameFile, { desc = "Rename this wiki page" })
+
+-- etc
+ks("n", "<esc>", vim.cmd.nohlsearch, { desc = "Remove search highlights" })
+ks("n", "<leader>g", vim.cmd.Goyo, { desc = "Toggle zen mode" })
+ks("n", "<leader>h", function()
+    vim.cmd.ColorizerToggle()
+    vim.g.colorizer = not vim.g.colorizer
+end, { desc = "Toggle hex colorizer" })
