@@ -60,7 +60,7 @@ require "which-key".add {
 
     -- etc
     { "<esc>", vim.cmd.nohlsearch, desc = "Remove search highlights" },
-    { "<leader>r", function() vim.cmd.Goyo() vim.g.goyo_on = not vim.g.goyo_on end, desc = "Toggle zen mode" },
+    { "<leader>g", function() vim.cmd.Goyo() vim.g.goyo_on = not vim.g.goyo_on end, desc = "Toggle zen mode" },
     { "<leader>h", function() vim.cmd.ColorizerToggle() vim.g.colorizer_on = not vim.g.colorizer_on end, desc = "Toggle hex colorizer" },
 
     {

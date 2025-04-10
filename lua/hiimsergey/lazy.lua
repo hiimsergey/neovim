@@ -1,8 +1,20 @@
 local vim = vim
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
+-- Put proper separators between custom lualine components
+---@param sections table lualine section declarations
+---@return table
+local function process_sections(sections)
+    for _, section in pairs(sections) do
+        for _, comp in ipairs(section) do
+            comp.separator = { left = "🬙" }
+        end
+    end
+    return sections
+end
+
 -- bootstrap lazy.nvim for if i lose the nvim share directory
-vim.keymap.set("n", "<leader>bl", function()
+vim.keymap.set("n", "<leader>l", function()
     print "Installing lazy.nvim..."
     local stat = vim.fn.system {
         "git", "clone", "--filter=blob:none", "--depth=1",
@@ -18,7 +30,7 @@ vim.keymap.set("n", "<leader>bl", function()
         return
     end
     print "Installed lazy.nvim successfully! Please restart nvim!"
-end)
+end, { desc = "Bootstrap lazy.nvim" })
 
 vim.opt.rtp:prepend(lazypath)
 
@@ -167,12 +179,12 @@ require "lazy".setup {
                 options = {
                     icons_enabled = true,
                     theme = "auto",
-                    section_separators = { left = '', right = '' },
-                    component_separators = { left = '│', right = '│' }
+                    section_separators = { left = "𜷄", right = "𜵟" },
+                    component_separators = { left = "𜹘", right = "𜹘" }
                 },
-                sections = {
+                sections = process_sections {
                     lualine_z = {
-                        "location",
+                        { "location" },
                         {
                             function() return vim.wo.wrap and "wrap" or "" end,
                             icon = "󰖶",
