@@ -7,6 +7,7 @@ vim.g.mapleader = " "
 require "which-key".add {
     -- neovim config
     { "<leader>n", group = "neovim" },
+    { "<leader>ni", function() vim.cmd.edit "~/.config/nvim/init.lua" end, desc = "Open nvim's init.lua" },
     { "<leader>nk", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/keys.lua" end, desc = "Open nvim's key config" },
     { "<leader>nl", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/lazy.lua" end, desc = "Open nvim's plugin config" },
     { "<leader>no", function() vim.cmd.edit "~/.config/nvim/lua/hiimsergey/opts.lua" end, desc = "Open nvim's core config" },

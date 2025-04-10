@@ -13,6 +13,6 @@ vim.keymap.set("n", "<leader>bl", function()
         }, true, {})
     end
     print "Installed lazy.nvim successfully! Please restart nvim!"
-end)
+end, { desc = "Bootstrap lazy.nvim" })
 
 require "hiimsergey"
