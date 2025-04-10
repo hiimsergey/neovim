@@ -1,4 +1,6 @@
 # My Neovim configuration
+![nvim](https://github.com/user-attachments/assets/dc4ef110-e4f8-49d1-850b-d74260fb78c6)
+
 Get started with cloning this repository. On Linux, it would be something like this:
 
 ```bash
